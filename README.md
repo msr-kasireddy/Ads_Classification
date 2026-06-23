@@ -5,10 +5,20 @@ real cm²**, and **draw boxes** around them — then browse everything in a
 dashboard. **100% free, 100% local. No cloud, no API keys, no paid services.**
 CPU works; a GPU only makes the optional deep-learning steps faster.
 
-![demo](data/output/sample_sakshi_ads.jpg)
+**Not comfortable with the command line?** See **[QUICKSTART.md](QUICKSTART.md)** —
+just double-click `run_dashboard.command` (macOS) or `run_dashboard.bat`
+(Windows) and the dashboard opens in your browser.
 
-> The image above is generated from a synthetic page (`scripts/make_sample.py`)
-> so the repo demonstrates end-to-end without shipping copyrighted newspapers.
+### Baseline detector on a real Eenadu page
+
+![real demo](docs/eenadu_demo.jpg)
+
+The built-in classical detector running on a genuine Eenadu page (rendered from
+a public Internet Archive edition). It correctly boxes the bottom display ad and
+proposes other bordered candidates. On dense news pages it **over-proposes**
+(news photos / boxed items look like ads) — this is expected, and exactly why
+the dashboard lets you keep/fix/draw boxes and **fine-tune a model** that learns
+what a real ad is. That loop is the path to high accuracy on Telugu pages.
 
 ---
 

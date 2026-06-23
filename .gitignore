@@ -29,3 +29,6 @@ runs/
 # OS
 .DS_Store
 Thumbs.db
+
+# local scratch / experiments (never commit)
+scratchpad/

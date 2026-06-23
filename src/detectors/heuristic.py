@@ -34,6 +34,9 @@ class HeuristicAdDetector:
         self.min_aspect = float(h.get("min_box_aspect", 0.10))
         self.max_aspect = float(h.get("max_box_aspect", 10.0))
         self.min_fill = float(h.get("min_fill", 0.04))
+        # candidates bigger than this fraction of the page are kept only if they
+        # have a crisp border (else they're merge artifacts).
+        self.max_area_frac = float(h.get("max_candidate_area_frac", 0.45))
         self.nms_iou = float(cfg.get("detection", "nms_iou", default=0.40))
 
     def detect(self, image_bgr: np.ndarray) -> list[Detection]:
@@ -79,6 +82,14 @@ class HeuristicAdDetector:
             if perim < 0.55:
                 continue
 
+            # Reject merge artifacts: a region covering a big chunk of the page
+            # but WITHOUT a clean rectangular border is almost always several
+            # news/photo blocks merged together, not a single ad. A genuine
+            # full-page/half-page ad has a crisp border (high perimeter).
+            area_frac = (w * h) / page_area
+            if area_frac > self.max_area_frac and perim < 0.9:
+                continue
+
             # how inky is the interior (graphics / large type)?
             interior = ink[y : y + h, x : x + w]
             fill = float(interior.mean()) / 255.0
@@ -93,7 +104,7 @@ class HeuristicAdDetector:
             d.extra = {
                 "rect_fill": round(rect_fill, 3),
                 "ink_fill": round(fill, 3),
-                "area_frac": round((w * h) / page_area, 4),
+                "area_frac": round(area_frac, 4),
             }
             dets.append(d)
 
