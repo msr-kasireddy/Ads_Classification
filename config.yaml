@@ -1,0 +1,70 @@
+# =============================================================================
+# Ads Detection — configuration
+# All values are safe defaults; tune per publication / scan source.
+# =============================================================================
+
+# Physical print/ad area of one full page, in centimetres.
+# Used to convert pixels -> cm so ad sizes come out in REAL cm^2.
+# Indian broadsheets (Eenadu, Sakshi) print area ~= 33 cm x 52 cm.
+# Detect the publication from the image path/filename (case-insensitive),
+# else "default" is used.
+publications:
+  sakshi:  { page_width_cm: 33.0, page_height_cm: 52.0 }
+  eenadu:  { page_width_cm: 33.0, page_height_cm: 52.0 }
+  default: { page_width_cm: 33.0, page_height_cm: 52.0 }
+
+calibration:
+  # auto_content : measure the printed-content bounding box on each page and
+  #                map its width -> page_width_cm. Robust to unknown DPI and to
+  #                white scan margins. (RECOMMENDED)
+  # dpi          : trust a fixed scan DPI instead (cm = px * 2.54 / dpi).
+  mode: auto_content
+  dpi: 150
+  # Ink threshold (0-255): pixels darker than this count as "printed content"
+  # when finding the page content extent.
+  ink_threshold: 200
+  # Ignore content rows/cols whose ink coverage is below this fraction
+  # (filters stray specks / scanner noise at the page edge).
+  min_ink_fraction: 0.01
+
+detection:
+  # heuristic | doclayout | yolov8 | ensemble
+  #   heuristic -> classical CV only (no downloads, always works)
+  #   doclayout -> DocLayout-YOLO model (needs `pip install doclayout-yolo`)
+  #   yolov8    -> an ultralytics .pt model (e.g. your fine-tuned ad model)
+  #   ensemble  -> merge heuristic + whichever model is configured
+  backend: heuristic
+
+  # Ads smaller than this (in real cm^2) are dropped as noise.
+  min_ad_area_cm2: 15.0
+  # Ads larger than this fraction of the page are clamped/flagged (full-page ad).
+  max_ad_area_frac: 0.95
+  # IoU threshold for merging overlapping detections (NMS).
+  nms_iou: 0.40
+  # Confidence threshold for model backends.
+  model_conf: 0.25
+
+  # Path to a fine-tuned YOLOv8 .pt for the `yolov8` backend.
+  yolov8_weights: models/ads_yolov8.pt
+  # Which model class names should be treated as advertisements.
+  # (yolo-doclaynet / DocLayout-YOLO call ad imagery "Picture"/"figure".)
+  ad_class_names: [advertisement, ad, picture, figure, image]
+
+heuristic:
+  # Border-box detector: ads are usually rectangles framed by ruled lines.
+  # Kernel sizes are expressed as a fraction of the page dimension.
+  line_len_frac: 0.020      # min length of a ruled line to count as a border
+  close_frac: 0.012         # closing kernel to join broken borders
+  min_box_aspect: 0.10      # reject extreme slivers
+  max_box_aspect: 10.0
+  # A candidate must be at least this "ink-dense" (graphics/large type)
+  # to count as a display ad vs an empty boxed editorial note. 0 disables.
+  min_fill: 0.04
+
+output:
+  # Where annotated images + results JSON go (relative to project root).
+  dir: data/output
+  box_color: [0, 0, 255]    # BGR — red boxes
+  box_thickness: 4
+  font_scale: 0.9
+  draw_area_label: true

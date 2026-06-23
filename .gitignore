@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Model weights (download / train locally — do not commit large binaries)
+models/*.pt
+*.pt
+*.onnx
+
+# Data & generated outputs (keep the repo light; these live on your machine)
+data/images/*
+data/output/*
+data/corrections/*
+data/yolo_dataset/
+runs/
+
+# but keep the folder structure + a tiny demo image
+!data/images/.gitkeep
+!data/output/.gitkeep
+!data/corrections/.gitkeep
+!data/images/sample_sakshi.png
+!data/output/sample_sakshi_ads.jpg
+
+# OS
+.DS_Store
+Thumbs.db

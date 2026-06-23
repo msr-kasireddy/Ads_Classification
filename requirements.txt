@@ -1,0 +1,20 @@
+# --- Core (required, lightweight, CPU-only, fully offline) ---
+numpy>=1.24
+opencv-python-headless>=4.8
+pillow>=10.0
+pyyaml>=6.0
+
+# --- Dashboard ---
+streamlit>=1.33
+pandas>=2.0
+
+# --- Model backends (OPTIONAL) ---
+# Install these only if you want the deep-learning detectors / fine-tuning.
+# The classical-CV (heuristic) backend works WITHOUT any of these.
+#
+#   pip install ultralytics            # YOLOv8 / yolo-doclaynet + fine-tuning
+#   pip install doclayout-yolo         # DocLayout-YOLO (newspaper-aware layout)
+#   pip install huggingface_hub        # to auto-download free model weights
+#
+# All of the above are free, Apache/AGPL-licensed, and run fully locally
+# (CPU works; a GPU just makes it faster). No cloud, no API keys, $0.
