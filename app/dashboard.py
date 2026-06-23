@@ -256,6 +256,21 @@ def _training_section(folder: str) -> None:
     n_done = len(list(CORRECTIONS_DIR.glob("*.json"))) if CORRECTIONS_DIR.exists() else 0
     st.write(f"You have corrected **{n_done}** page(s). "
              "Aim for a few hundred for high accuracy.")
+
+    with st.expander("❓ How does it learn from my fixes? (important)"):
+        st.markdown(
+            "- Every box you **keep** on a saved page = *this is an ad*.\n"
+            "- Every box you **delete** (and anything you leave unboxed) = "
+            "*this is NOT an ad* — the model learns to stop marking it.\n"
+            "- So to fix a **wrongly-marked ad**: switch to **✋ Move / resize / "
+            "delete**, click the wrong red box, press **Delete**, then **💾 Save**.\n"
+            "- To add a **missed ad**: switch to **✏️ Draw new ad**, drag a box, "
+            "then **💾 Save**.\n\n"
+            "Training uses *only your saved pages* as the truth. The more pages "
+            "you correct, the more accurate your model becomes. After training, "
+            "set the **Detector** (sidebar) to **yolov8** and it will mark far "
+            "fewer wrong ads."
+        )
     have_trainer = _module_available("ultralytics")
 
     c1, c2 = st.columns(2)

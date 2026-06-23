@@ -33,9 +33,14 @@ if ! python -c "import streamlit, streamlit_drawable_canvas, cv2" >/dev/null 2>&
   python -m pip install -r requirements.txt
 fi
 
-# 4) launch the dashboard (opens in your web browser)
+# 4) launch the dashboard (opens in your web browser) on a unique port
+PORT=8765
 echo
-echo "✅  Opening the dashboard in your browser..."
+echo "✅  Opening the dashboard in your browser at:  http://localhost:$PORT"
 echo "    (Leave this window open while you work. Close it to stop.)"
+echo "    If port $PORT is busy, change the PORT number on this line and re-open."
 echo
-exec python -m streamlit run app/dashboard.py
+exec python -m streamlit run app/dashboard.py \
+  --server.port "$PORT" \
+  --server.address localhost \
+  --browser.gatherUsageStats false

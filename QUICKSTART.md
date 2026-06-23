@@ -10,10 +10,17 @@ This guide is for using the tool as an end user. You won't type any commands.
 - **Windows:** double-click **`run_dashboard.bat`**
 
 The first launch takes a few minutes (it sets itself up once). After that it
-opens in a few seconds. Your web browser will open showing the dashboard.
+opens in a few seconds. Your web browser opens showing the dashboard at:
 
-> Leave the little black window open while you work — it's running the app.
-> Close it when you're done.
+```
+http://localhost:8765
+```
+
+(Port **8765** is used so it won't clash with other apps like 3000/8000/8080.
+If 8765 is ever busy, open the launcher file and change the one `PORT` number.)
+
+> Leave the little black/terminal window open while you work — it's running the
+> app on your own computer. Close it when you're done.
 
 ## 2. Point it at your newspaper images
 
@@ -33,12 +40,26 @@ Each red box is an advertisement the current model detected, with its size in
 *starting point* — it suggests candidate boxes. You make them correct:
 
 - **Draw a missing ad:** choose **✏️ Draw new ad**, then drag a box over it.
-- **Fix a wrong box:** choose **✋ Move / resize / delete**, click the box, then
-  drag its handles to resize, drag the middle to move, or press **Delete** to
-  remove it.
+- **Remove a WRONGLY-marked ad** (e.g. it marked 4 but there are only 2):
+  choose **✋ Move / resize / delete**, click the wrong red box, press
+  **Delete**. Repeat until only the real ads are boxed.
+- **Adjust a box:** in the same mode, drag its corner handles to resize or drag
+  the middle to move.
 
-When the boxes on a page are correct, click **💾 Save my corrections for this
+When only the real ads are boxed, click **💾 Save my corrections for this
 page**. Do this for as many pages as you can (a few hundred is the goal).
+
+### How removing wrong ads trains the model
+
+This is the key idea:
+
+- Every box you **keep** teaches the model *"this is an ad."*
+- Every box you **delete** (and everything you leave unboxed) teaches it
+  *"this is NOT an ad"* — so next time it won't mark it.
+
+You don't label the wrong ones separately — just **delete them and save**. The
+trained model learns from the difference. That's how a page that wrongly shows
+4 boxes becomes a clean 2-box result after you correct enough pages and train.
 
 ## 4. Train your own model
 
